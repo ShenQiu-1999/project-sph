@@ -2,11 +2,11 @@
   <div class="floor">
     <div class="py-container">
       <div class="title clearfix">
-        <h3 class="fl">{{list.name}}</h3>
+        <h3 class="fl">{{ list.name }}</h3>
         <div class="fr">
           <ul class="nav-tabs clearfix">
             <li class="" v-for="(nav,index) in list.navList" :key="index">
-              <a href="#" data-toggle="tab">{{nav.text}}</a>
+              <a href="#" data-toggle="tab">{{ nav.text }}</a>
             </li>
           </ul>
         </div>
@@ -16,23 +16,13 @@
           <div class="floor-1">
             <div class="blockgary">
               <ul class="jd-list">
-                <li v-for="(keyword,index) in list.keywords" :key="index">{{keyword}}</li>
+                <li v-for="(keyword,index) in list.keywords" :key="index">{{ keyword }}</li>
               </ul>
               <img :src="list.imgUrl" alt=""/>
             </div>
             <div class="floorBanner">
-              <div class="swiper-container" ref="floor1Swiper">
-                <div class="swiper-wrapper">
-                  <div class="swiper-slide" v-for="carousel in list.carouselList" :key="carousel.id">
-                    <img :src="carousel.imgUrl" alt="">
-                  </div>
-                </div>
-                <!-- 如果需要分页器 -->
-                <div class="swiper-pagination"></div>
-                <!-- 如果需要导航按钮 -->
-                <div class="swiper-button-prev"></div>
-                <div class="swiper-button-next"></div>
-              </div>
+              <!--轮播图-->
+              <Carousel :list="list.carouselList"/>
             </div>
             <div class="split">
               <span class="floor-x-line"></span>
@@ -63,32 +53,15 @@
 </template>
 
 <script>
-import Swiper from "swiper";
+
 export default {
   name: "Floor",
-  props:['list'],
-  mounted() {
-    //第一次在写Swiper的时候 在mounted中是不可以实现轮播
-    //第一次是组件内部发请求 这里Home中发起请求得到了数据 props传到了子组件
-    new Swiper ('.swiper-container', {
-      loop: true, // 循环模式选项
-      // 如果需要分页器
-      pagination: {
-        el: '.swiper-pagination',
-        clickable:true,
-      },
-      // 如果需要前进后退按钮
-      navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev',
-      },
-    })
-  },
+  props: ['list'],
 }
 </script>
 
 <style scoped lang="less">
-  .floor {
+.floor {
   margin-top: 15px;
 
   .py-container {

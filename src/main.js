@@ -5,8 +5,10 @@ Vue.config.productionTip = false
 
 //三级联动组件---全局组件
 import TypeNav from './components/TypeNav/TypeNav'
+import Carousel from '@/components/Carousel'
 //第一参数全局组件的名字 第二个参数哪个组件
 Vue.component(TypeNav.name,TypeNav)
+Vue.component(Carousel.name,Carousel)
 
 //引入路由
 import router from "@/router";

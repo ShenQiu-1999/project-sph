@@ -3,18 +3,7 @@
     <div class="sortList clearfix">
       <div class="center">
         <!--banner轮播-->
-        <div class="swiper-container" ref="mySwiper">
-          <div class="swiper-wrapper">
-            <div class="swiper-slide" v-for="(carousel) in bannerList" :key="carousel.id">
-              <img :src="carousel.imgUrl" alt=""/>
-            </div>
-          </div>
-          <!-- 如果需要分页器 -->
-          <div class="swiper-pagination"></div>
-          <!-- 如果需要导航按钮 -->
-          <div class="swiper-button-prev"></div>
-          <div class="swiper-button-next"></div>
-        </div>
+        <Carousel :list="bannerList"/>
       </div>
       <div class="right">
         <div class="news">
@@ -101,43 +90,16 @@
 
 <script>
 import {mapState} from "vuex";
-import Swiper from 'swiper';
 export default {
   name: "ListContainer",
   mounted() {
     //派发action：发起Ajax请求
     this.$store.dispatch('getBannerList')
   },
-  computed:{
+  computed: {
     ...mapState({
-      bannerList:state => state.home.bannerList
+      bannerList: state => state.home.bannerList
     })
-  },
-  updated() {
-  },
-  watch:{
-    //监听bannerList数据的变化
-    bannerList:{
-      deep:true,
-      handler(newValue,oldValue){
-        //DOM更新 循环执行完毕后 执行回调 配合一些操作DOM的第三方插件
-        this.$nextTick(()=>{
-          new Swiper (this.$refs.mySwiper, {
-            loop: true, // 循环模式选项
-            // 如果需要分页器
-            pagination: {
-              el: '.swiper-pagination',
-              clickable:true,
-            },
-            // 如果需要前进后退按钮
-            navigation: {
-              nextEl: '.swiper-button-next',
-              prevEl: '.swiper-button-prev',
-            },
-          })
-        })
-      }
-    },
   },
 }
 </script>

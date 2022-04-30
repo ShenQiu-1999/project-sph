@@ -11,3 +11,11 @@ export const reqCategoryList=()=>{
 export const reqGetBannerList=()=> mockRequests.get('/banner');
 //获取floor数据
 export const reqFloorList=()=>mockRequests.get('/floor');
+//搜索模块数据 传递过来参数至少是一个空对象
+export const reqGetSearchInfo=(params)=>{
+    return requests({
+        url:"/list",
+        method:"post",
+        data:params
+    })
+}
