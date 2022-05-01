@@ -8,7 +8,7 @@
         <transition name="sort">
           <!--三级联动-->
           <div class="sort" v-show="show">
-            <!--          事件委派-->
+            <!--事件委派-->
             <div class="all-sort-list2" @click="goSearch">
               <div class="item" v-for="(c1,index) in categoryList" :key="c1.categoryId"
                    :class="{cur:currentIndex===index}">
@@ -24,13 +24,11 @@
                       <dt>
                         <a :data-categoryName="c2.categoryName"
                            :data-category2Id="c2.categoryId">{{ c2.categoryName }}</a>
-                        <!--                      <router-link to="/search">{{c2.categoryName}}</router-link>-->
                       </dt>
                       <dd>
                         <em v-for="c3 in c2.categoryChild" :key="c3.categoryId">
                           <a :data-categoryName="c3.categoryName"
                              :data-category3Id="c3.categoryId">{{ c3.categoryName }}</a>
-                          <!--                        <router-link to="/search">{{c3.categoryName}}</router-link>-->
                         </em>
                       </dd>
                     </dl>
@@ -69,7 +67,6 @@ export default {
       show: true,
     }
   },
-  //组件挂载完毕 可以向服务器发请求
   mounted() {
     //当组件挂载完毕让show变为false 判断在search路由组件下隐藏
     if (this.$route.path === '/search') {
@@ -99,9 +96,11 @@ export default {
     leaveShow() {
       this.currentIndex = -1;
       //如果是路由组件执行
-      if (this.$route.path === '/search') {
+      if (this.$route.name === 'search') {
         this.show = false;
       }
+      // console.log(this.$route.name)
+      // console.log(this.$route.path)
     },
     //进行路由跳转的方法 传递参数
     goSearch(event) {
@@ -160,6 +159,7 @@ export default {
       color: #fff;
       font-size: 14px;
       font-weight: bold;
+      cursor: default;
     }
 
     .nav {
@@ -194,6 +194,7 @@ export default {
 
             a {
               color: #333;
+              cursor: pointer;
             }
           }
 
@@ -230,6 +231,10 @@ export default {
                   text-align: right;
                   padding: 3px 6px 0 0;
                   font-weight: 700;
+
+                  a {
+                    cursor: pointer;
+                  }
                 }
 
                 dd {
@@ -245,6 +250,10 @@ export default {
                     padding: 0 8px;
                     margin-top: 5px;
                     border-left: 1px solid #ccc;
+
+                    a {
+                      cursor: pointer;
+                    }
                   }
                 }
               }

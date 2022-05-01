@@ -11,15 +11,15 @@
             </li>
           </ul>
           <ul class="fl sui-tag">
-            <li class="with-x">手机</li>
-            <li class="with-x">iphone<i>×</i></li>
-            <li class="with-x">华为<i>×</i></li>
-            <li class="with-x">OPPO<i>×</i></li>
+            <li class="with-x" v-if="searchParams.categoryName">{{searchParams.categoryName}}<i @click="removeCategoryName">×</i></li>
+            <li class="with-x" v-if="searchParams.keyword">{{searchParams.keyword}}<i @click="removeKeyword">×</i></li>
+            <li class="with-x" v-if="searchParams.trademark">{{searchParams.trademark.split(":")[1]}}<i @click="removeTrademark">×</i></li>
+            <li class="with-x" v-for="(attrValue,index) in searchParams.props" :key="index">{{attrValue.split(':')[1]}}<i @click="removeAttr(index)">×</i></li>
           </ul>
         </div>
 
         <!--selector-->
-        <SearchSelector/>
+        <SearchSelector @trademarkInfo="trademarkInfo" @attrInfo="attrInfo"/>
 
         <!--details-->
         <div class="details clearfix">
@@ -60,12 +60,12 @@
                   <div class="price">
                     <strong>
                       <em>¥</em>
-                      <i>{{good.price}}.00</i>
+                      <i>{{ good.price }}.00</i>
                     </strong>
                   </div>
                   <div class="attr">
                     <a target="_blank" href="item.html" title="促销信息，下单即赠送三个月CIBN视频会员卡！【小米电视新品4A 58 火爆预约中】">
-                      {{good.title}}
+                      {{ good.title }}
                     </a>
                   </div>
                   <div class="commit">
@@ -118,17 +118,97 @@
 <script>
 import SearchSelector from './SearchSelector/SearchSelector'
 import {mapGetters} from "vuex"
-
 export default {
   name: 'Search',
   components: {
     SearchSelector
   },
+  data() {
+    return {
+      searchParams: {
+        //一级、二级、三级分类id
+        category1Id: '',
+        category2Id: '',
+        category3Id: '',
+        //分类名
+        categoryName: '',
+        // 排序
+        order: '',
+        //分页器
+        pageNo: 1,
+        pageSize: 3,
+        //品牌售卖商品属性
+        props: [],
+        //品牌
+        trademark: ''
+      }
+    }
+  },
+  beforeMount() {
+    //合并参数到searchParams
+    Object.assign(this.searchParams, this.$route.query, this.$route.params)
+  },
   mounted() {
-    this.$store.dispatch('getSearchInfo')
+    this.getData();
   },
   computed: {
     ...mapGetters(['goodsList'])
+  },
+  methods: {
+    //获取search的数据
+    getData() {
+      this.$store.dispatch('getSearchInfo', this.searchParams)
+    },
+    //删除分类名字面包屑
+    removeCategoryName(){
+      this.searchParams.category1Id=undefined;
+      this.searchParams.category2Id=undefined;
+      this.searchParams.category3Id=undefined;
+      this.searchParams.categoryName=undefined;
+      this.getData();
+      this.$router.push({name:'search',params:this.$route.params})
+    },
+    //删除搜索关键字面包屑
+    removeKeyword(){
+      this.searchParams.keyword=undefined;
+      this.getData();
+      //通知Header组件删除关键字
+      this.$bus.$emit('clear')
+      this.$router.push({name:'search',query:this.$route.query})
+    },
+    //自定义事件回调 子给父传数据
+    trademarkInfo(trademark){
+      //接口参数格式 "ID:品牌名称"
+      this.searchParams.trademark = `${trademark.tmId}:${trademark.tmName}`
+      this.getData()
+    },
+    //删除面包屑品牌信息
+    removeTrademark(){
+      this.searchParams.trademark=undefined
+      this.getData()
+    },
+    //品牌售卖属性数据
+    attrInfo(attr,attrValue){
+      let props = `${attr.attrId}:${attrValue}:${attr.attrName}`;
+      if (!this.searchParams.props.includes(props))
+        this.searchParams.props.push(props)
+      this.getData()
+    },
+    //删除面包屑属性数据
+    removeAttr(index){
+      this.searchParams.props.splice(index,1);
+      this.getData()
+    }
+  },
+  watch:{
+    //监听路由的信息有没有发生变化 有则发请求
+    $route(){
+      Object.assign(this.searchParams, this.$route.query, this.$route.params);
+      this.getData();
+      this.searchParams.category1Id='';
+      this.searchParams.category2Id='';
+      this.searchParams.category3Id='';
+    }
   }
 }
 </script>

@@ -24,6 +24,10 @@ import 'swiper/css/swiper.min.css';
 
 new Vue({
   render: h => h(App),
+  //全局事件总线
+  beforeCreate() {
+    Vue.prototype.$bus=this;
+  },
   //注册路由 组件身上有$route：获取路由信息:路径、query、params
   //                $router：进行编程式导航路由跳转:push、replace
   //注册完路由不管是否是路由组件都有上面两个属性
